@@ -12,6 +12,7 @@ class InvoiceService
         $request->validate(['invoices_pdf.*' => 'required|file|mimes:pdf|max:10240',]);
         $results = [];
         $parser = new Parser();
+
         foreach ($request->file('invoices_pdf') as $pdf) {
             try {
                 $text = $parser->parseFile($pdf->getPathname())->getText();
