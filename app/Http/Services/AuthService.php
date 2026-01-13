@@ -19,11 +19,7 @@ class AuthService
 
         $request->session()->regenerate();
 
-        return response()->json([
-            'message' => 'Logged in successfully',
-            'user' => auth()->user(),
-            'redirect' => url('/pages/dashboard')
-        ]);
+        return redirect('/pages/dashboard');
     }
 
     public function destroySession()
