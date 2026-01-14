@@ -41,9 +41,9 @@ class InvoiceService
                 ]);
 
                 // Optional: compare immediately
-                if ($parsed['order_id']) {
-                    $this->compareWithOrders($invoice);
-                }
+                // if ($parsed['order_id']) {
+                //     $this->compareWithOrders($invoice);
+                // }
 
                 $results[] = ['file' => $pdf->getClientOriginalName(), 'status' => 'success'];
             } catch (\Throwable $e) {
