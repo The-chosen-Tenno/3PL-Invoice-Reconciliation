@@ -19,160 +19,132 @@
                             </div>
                             <div class="card-body px-0 pb-2">
                                 <div class="table-responsive p-0">
-                                    <div class="search-filter">
-                                        <div class="search-box">
-                                            <i class="material-icons">search</i>
-                                            <input type="text" placeholder="Search invoices, orders, IDs..."
-                                                id="tableSearch">
-                                        </div>
-                                        <select class="filter-select" id="statusFilter">
-                                            <option value="">All Statuses</option>
-                                            <option value="parsed_raw">Parsed Raw</option>
-                                            <option value="processing">Processing</option>
-                                            <option value="completed">Completed</option>
-                                            <option value="failed">Failed</option>
-                                        </select>
-                                        <select class="filter-select" id="dateFilter">
-                                            <option>Last 30 days</option>
-                                            <option>Last 7 days</option>
-                                            <option>This month</option>
-                                            <option>Custom range</option>
-                                        </select>
-                                    </div>
-
-                                    <table class="data-table">
+                                    <table class="data-table table align-items-center mb-0">
                                         <thead>
                                             <tr>
-                                                <th>Invoice</th>
-                                                <th>Invoice ID</th>
-                                                <th>Order ID</th>
-                                                <th>Status</th>
-                                                <th>Amount</th>
-                                                <th>Actions</th>
+                                                <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2"
+                                                    style="padding: 12px 8px;">
+                                                    Invoice ID
+                                                </th>
+                                                <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7"
+                                                    style="padding: 12px 8px;">
+                                                    Order ID
+                                                </th>
+                                                <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7"
+                                                    style="padding: 12px 8px;">
+                                                    Status
+                                                </th>
+                                                <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7"
+                                                    style="padding: 12px 8px;">
+                                                    Amount
+                                                </th>
+                                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7"
+                                                    style="padding: 12px 8px;">
+                                                    Actions
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <div class="invoice-cell">
-                                                        <div class="invoice-icon">
-                                                            <i class="material-icons">description</i>
-                                                        </div>
-                                                        <div class="invoice-info">
-                                                            <h6>Monthly Subscription</h6>
-                                                            <p>Premium Plan - December</p>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm text-primary">INV-2024-002</h6>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="id-badge">INV-2024-001</span>
+                                                    <p class="text-xs font-weight-bold mb-0">ORD-45824</p>
                                                 </td>
                                                 <td>
-                                                    <span class="id-badge">ORD-45823</span>
-                                                </td>
-                                                <td>
-                                                    <span class="status-badge status-completed">
-                                                        <span class="status-dot"></span>
-                                                        Completed
+                                                    <span class="badge badge-sm bg-gradient-info">
+                                                        <span class="me-1">●</span>Processing
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="price">$129.99</span>
+                                                    <p class="text-sm font-weight-bold mb-0 text-success">$899.50</p>
                                                 </td>
-                                                <td>
-                                                    <div class="actions">
-                                                        <button class="action-btn" title="View">
-                                                            <i class="material-icons">visibility</i>
-                                                        </button>
-                                                        <button class="action-btn" title="Download">
-                                                            <i class="material-icons">download</i>
-                                                        </button>
-                                                        <button class="action-btn" title="More">
-                                                            <i class="material-icons">more_horiz</i>
-                                                        </button>
-                                                    </div>
+                                                <td class="align-middle text-center">
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye text-xs"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="Download">
+                                                        <i class="fas fa-download text-xs"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="More">
+                                                        <i class="fas fa-ellipsis-h text-xs"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <div class="invoice-cell">
-                                                        <div class="invoice-icon">
-                                                            <i class="material-icons">description</i>
-                                                        </div>
-                                                        <div class="invoice-info">
-                                                            <h6>Product Purchase</h6>
-                                                            <p>Electronics Bundle</p>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm text-primary">INV-2024-003</h6>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="id-badge">INV-2024-002</span>
+                                                    <p class="text-xs font-weight-bold mb-0">ORD-45825</p>
                                                 </td>
                                                 <td>
-                                                    <span class="id-badge">ORD-45824</span>
-                                                </td>
-                                                <td>
-                                                    <span class="status-badge status-processing">
-                                                        <span class="status-dot"></span>
-                                                        Processing
+                                                    <span class="badge badge-sm bg-gradient-warning">
+                                                        <span class="me-1">●</span>Parsed Raw
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="price">$899.50</span>
+                                                    <p class="text-sm font-weight-bold mb-0 text-success">$2,499.00</p>
                                                 </td>
-                                                <td>
-                                                    <div class="actions">
-                                                        <button class="action-btn" title="View">
-                                                            <i class="material-icons">visibility</i>
-                                                        </button>
-                                                        <button class="action-btn" title="Download">
-                                                            <i class="material-icons">download</i>
-                                                        </button>
-                                                        <button class="action-btn" title="More">
-                                                            <i class="material-icons">more_horiz</i>
-                                                        </button>
-                                                    </div>
+                                                <td class="align-middle text-center">
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye text-xs"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="Download">
+                                                        <i class="fas fa-download text-xs"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="More">
+                                                        <i class="fas fa-ellipsis-h text-xs"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <div class="invoice-cell">
-                                                        <div class="invoice-icon">
-                                                            <i class="material-icons">description</i>
-                                                        </div>
-                                                        <div class="invoice-info">
-                                                            <h6>Consulting Services</h6>
-                                                            <p>Q4 2024 Advisory</p>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm text-primary">INV-2024-001</h6>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="id-badge">INV-2024-003</span>
+                                                    <p class="text-xs font-weight-bold mb-0">ORD-45823</p>
                                                 </td>
                                                 <td>
-                                                    <span class="id-badge">ORD-45825</span>
-                                                </td>
-                                                <td>
-                                                    <span class="status-badge status-parsed_raw">
-                                                        <span class="status-dot"></span>
-                                                        Parsed Raw
+                                                    <span class="badge badge-sm bg-gradient-success">
+                                                        <span class="me-1">●</span>Completed
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="price">$2,499.00</span>
+                                                    <p class="text-sm font-weight-bold mb-0 text-success">$1,299.99</p>
                                                 </td>
-                                                <td>
-                                                    <div class="actions">
-                                                        <button class="action-btn" title="View">
-                                                            <i class="material-icons">visibility</i>
-                                                        </button>
-                                                        <button class="action-btn" title="Download">
-                                                            <i class="material-icons">download</i>
-                                                        </button>
-                                                        <button class="action-btn" title="More">
-                                                            <i class="material-icons">more_horiz</i>
-                                                        </button>
-                                                    </div>
+                                                <td class="align-middle text-center">
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye text-xs"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="Download">
+                                                        <i class="fas fa-download text-xs"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-secondary mb-0 px-1"
+                                                        data-bs-toggle="tooltip" title="More">
+                                                        <i class="fas fa-ellipsis-h text-xs"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </tbody>
