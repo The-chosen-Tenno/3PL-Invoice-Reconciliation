@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('invoice_name');
+            $table->longText('content')->nullable(); // always save raw text
+            $table->string('status')->default('parsed_raw');
+            $table->string('invoice_id')->nullable();
+            $table->string('order_id')->nullable();
+            $table->decimal('final_price', 12, 2)->nullable();
             $table->timestamps();
         });
     }
