@@ -16,8 +16,24 @@
                         <input type="file" class="form-control" id="invoices_pdf" name="invoices_pdf[]" accept=".pdf"
                             multiple>
                     </div>
+
+                    <!-- Message alerts -->
                     <div id="messageDiv" class="mb-3"></div>
-                    <div id="progressDiv" class="mb-3"></div>
+
+                    <!-- Progress bar -->
+                    <div id="progressContainer" class="d-none mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <small class="text-muted">Uploading...</small>
+                            <small class="text-muted" id="progressText">0 / 0 files uploaded</small>
+                        </div>
+                        <div class="progress">
+                            <div id="progressBar"
+                                class="progress-bar progress-bar-striped progress-bar-animated bg-gradient-primary"
+                                role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+                                aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer border-0 pt-0 px-4">
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
