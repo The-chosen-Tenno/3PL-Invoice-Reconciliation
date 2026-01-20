@@ -35,7 +35,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="button"
+                                        <button id="shopify-login" type="button"
                                             class="btn btn-outline-success w-100 mb-3 d-flex align-items-center justify-content-center"
                                             style="gap: 0.5rem;">
                                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25"
@@ -67,4 +67,5 @@
             </div>
         </div>
     </main>
+    <script src="{{ asset('assets/js/login.js') }}"></script>
 </x-layout>
