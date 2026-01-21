@@ -34,7 +34,7 @@
                                             class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-sm text-secondary">or</span>
                                     </div>
 
-                                    <div class="text-center">
+                                    {{-- <div class="text-center">
                                         <button id="shopify-login" type="button"
                                             class="btn btn-outline-success w-100 mb-3 d-flex align-items-center justify-content-center"
                                             style="gap: 0.5rem;">
@@ -52,7 +52,7 @@
                                             </svg>
                                             Login with Shopify
                                         </button>
-                                    </div>
+                                    </div> --}}
 
                                     <p class="mt-4 text-sm text-center">
                                         Don't have an account?

@@ -7,14 +7,57 @@
                 <div class="col-12">
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            {{-- <div
+                                class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
+                                <h6 class="text-white text-capitalize m-0">All Orders</h6>
+
+                                <div class="d-flex align-items-center">
+                                    <button type="button" id="uploadOrdersTrigger" class="btn bg-gradient-dark mb-0">
+                                        <i class="material-icons text-sm">add</i>&nbsp;&nbsp; Upload Orders
+                                    </button>
+
+                                    <form id="uploadOrdersForm" enctype="multipart/form-data" class="d-none">
+                                        @csrf
+                                        <input type="file" id="orders_file" name="orders_file[]"
+                                            accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                            multiple>
+                                    </form>
+                                </div>
+                            </div> --}}
                             <div
                                 class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize m-0">My Projects</h6>
-                                <button type="button" id="addProject" class="btn bg-gradient-dark mb-0"
-                                    data-bs-toggle="modal" data-bs-target="#addProjectModal">
-                                    <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add
-                                </button>
+                                <h6 class="text-white text-capitalize m-0">All Orders</h6>
+
+                                <div class="d-flex align-items-center">
+                                    <button type="button" id="uploadOrdersTrigger" class="btn bg-gradient-dark mb-0">
+                                        <i class="material-icons text-sm">add</i>&nbsp;&nbsp; Upload Orders
+                                    </button>
+
+                                    <form id="uploadOrdersForm" enctype="multipart/form-data" class="d-none">
+                                        @csrf
+                                        <input type="file" id="orders_file" name="orders_file[]"
+                                            accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                            multiple>
+                                    </form>
+                                </div>
                             </div>
+
+                            <div class="px-3 mt-3">
+                                <div id="messageDiv"></div>
+
+                                <div id="progressContainer" class="d-none mb-3">
+                                    <div class="progress">
+                                        <div id="progressBar" class="progress-bar bg-gradient-primary"
+                                            role="progressbar" style="width: 0%"></div>
+                                    </div>
+
+                                    <small id="progressText" class="text-muted mt-1 d-block text-end">
+                                        0/0 uploaded
+                                    </small>
+                                </div>
+                            </div>
+
+
                             <div class="card-body px-0 pb-2">
                                 <div class="table-responsive p-0">
                                     <table class="data-table table align-items-center mb-0">
@@ -189,4 +232,5 @@
             </div>
         </div>
     </main>
+    <script src="{{ asset('assets/js/orders.js') }}"></script>
 </x-layout>
