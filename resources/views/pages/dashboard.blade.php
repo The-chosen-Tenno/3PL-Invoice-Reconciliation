@@ -27,7 +27,7 @@
                                     </button>
                                     <form id="uploadInvoiceForm" enctype="multipart/form-data" class="d-none">
                                         @csrf
-                                        <input type="file" id="invoices_import" name="invoices_pdf[]" accept=".xlsx,.xls"
+                                        <input type="file" id="invoices_import" name="invoices_xlsx[]" accept=".xlsx,.xls"
                                             multiple>
                                     </form>
                                 </div>

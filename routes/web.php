@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\InvoiceShipmentController;
 
 Route::middleware('guest')->group(function () {
     Route::view('/', 'auth.login')->name('login');
@@ -22,6 +22,6 @@ Route::middleware('auth')->prefix('pages')->group(function () {
 });
 
 // Invoices
-Route::middleware('auth')->controller(InvoiceController::class)->group(function () {
+Route::middleware('auth')->controller(InvoiceShipmentController::class)->group(function () {
     Route::post('/invoices/upload', 'upload')->name('invoices.upload');
 });

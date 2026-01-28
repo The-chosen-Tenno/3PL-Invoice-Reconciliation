@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ALLOWED_MIME = [
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/vnd.ms-excel",
-        "application/octet-stream", 
+        "application/octet-stream",
     ];
 
     trigger.addEventListener("click", () => fileInput.click());
@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // MIME is optional — we don’t hard-fail on it, but we can warn
             if (file.type && !ALLOWED_MIME.includes(file.type)) {
-                console.warn(`${file.name} warning: suspicious mime "${file.type}" (allowing anyway)`);
+                console.warn(
+                    `${file.name} warning: suspicious mime "${file.type}" (allowing anyway)`,
+                );
             }
 
             if (file.size > MAX_SIZE_MB * 1024 * 1024) {
@@ -51,7 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (validFiles.length === 0) {
-            showMessage("No valid Excel files to upload (only .xlsx/.xls, max 10MB).", "error");
+            showMessage(
+                "No valid Excel files to upload (only .xlsx/.xls, max 10MB).",
+                "error",
+            );
             fileInput.value = "";
             return;
         }
@@ -65,7 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tokenElement = form.querySelector('input[name="_token"]');
         if (!tokenElement) {
-            showMessage("Security token missing. Please refresh the page.", "error");
+            showMessage(
+                "Security token missing. Please refresh the page.",
+                "error",
+            );
             return;
         }
         const csrfToken = tokenElement.value;
@@ -75,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const formData = new FormData();
 
             // IMPORTANT: backend must expect this name
-            batch.forEach((file) => formData.append("invoices_file[]", file));
+            batch.forEach((file) => formData.append("invoices_xlsx[]", file));
 
             try {
                 const response = await fetch("/invoices/upload", {
@@ -129,7 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
             error: "alert-danger",
             warning: "alert-warning",
         };
-        const icon = type === "success" ? "check_circle" : type === "error" ? "error" : "warning";
+        const icon =
+            type === "success"
+                ? "check_circle"
+                : type === "error"
+                  ? "error"
+                  : "warning";
 
         messageDiv.innerHTML = `
             <div class="alert ${alertClass[type] || alertClass.warning} alert-dismissible fade show text-white" role="alert">
