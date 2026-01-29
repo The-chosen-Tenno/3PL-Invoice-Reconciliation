@@ -60,33 +60,4 @@ class UserService
             ]
         );
     }
-
-    public function updateUserStatus($id, $status)
-    {
-        $user = User::findOrFail($id);
-        $user->update(['status' => $status]);
-
-        if ($status == 'confirmed') {
-            $limit = LeaveLimit::firstOrCreate(['user_id' => $id]);
-            return response()->json([
-                'message' => $limit->wasRecentlyCreated ? "Created" : "Already exists"
-            ]);
-        }
-        return response()->json(
-            [
-                'message' => "account declined successfully"
-            ]
-        );
-    }
-
-    public function updateUserActiveStatus($id, $status)
-    {
-        $user = User::findOrFail($id);
-        $user->update(['active' => $status]);
-        return response()->json(
-            [
-                'message' => "Selected account is now {$status}"
-            ]
-        );
-    }
 }

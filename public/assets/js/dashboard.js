@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const trigger = document.getElementById("uploadTrigger");
     const form = document.getElementById("uploadInvoiceForm");
-    const fileInput = document.getElementById("invoices_import"); // <-- changed
+    const fileInput = document.getElementById("invoices_import");
     const messageDiv = document.getElementById("messageDiv");
     const progressContainer = document.getElementById("progressContainer");
     const progressBar = document.getElementById("progressBar");
@@ -10,13 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const MAX_BATCH = 20;
     const MAX_SIZE_MB = 10;
 
-    // Excel rules
     const ALLOWED_EXT = ["xlsx", "xls"];
     const ALLOWED_MIME = [
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/vnd.ms-excel",
         "application/octet-stream",
     ];
+
+    let pollTimer = null;
 
     trigger.addEventListener("click", () => fileInput.click());
 
@@ -32,61 +33,48 @@ document.addEventListener("DOMContentLoaded", () => {
         const validFiles = files.filter((file) => {
             const ext = (file.name.split(".").pop() || "").toLowerCase();
 
-            if (!ALLOWED_EXT.includes(ext)) {
-                console.warn(`${file.name} skipped: not an Excel file`);
-                return false;
-            }
+            if (!ALLOWED_EXT.includes(ext)) return false;
 
-            // MIME is optional — we don’t hard-fail on it, but we can warn
             if (file.type && !ALLOWED_MIME.includes(file.type)) {
-                console.warn(
-                    `${file.name} warning: suspicious mime "${file.type}" (allowing anyway)`,
-                );
+                console.warn(`${file.name} suspicious mime "${file.type}" (allowing anyway)`);
             }
 
-            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                console.warn(`${file.name} skipped: too large`);
-                return false;
-            }
+            if (file.size > MAX_SIZE_MB * 1024 * 1024) return false;
 
             return true;
         });
 
         if (validFiles.length === 0) {
-            showMessage(
-                "No valid Excel files to upload (only .xlsx/.xls, max 10MB).",
-                "error",
-            );
+            showMessage("No valid Excel files to upload (only .xlsx/.xls, max 10MB).", "error");
             fileInput.value = "";
             return;
         }
 
+        stopPolling();
+
         messageDiv.innerHTML = "";
         progressContainer.classList.remove("d-none");
-        updateProgress(0, validFiles.length);
 
-        let uploadedCount = 0;
-        let failedBatches = 0;
+        updateProgressBar(0, validFiles.length, `0 / ${validFiles.length} files uploaded`);
 
         const tokenElement = form.querySelector('input[name="_token"]');
         if (!tokenElement) {
-            showMessage(
-                "Security token missing. Please refresh the page.",
-                "error",
-            );
+            showMessage("Security token missing. Please refresh the page.", "error");
             return;
         }
         const csrfToken = tokenElement.value;
 
-        for (let i = 0; i < validFiles.length; i += MAX_BATCH) {
-            const batch = validFiles.slice(i, i + MAX_BATCH);
-            const formData = new FormData();
+        let uploadedCount = 0;
+        let failedBatches = 0;
+        let lastBatchId = null;
 
-            // IMPORTANT: backend must expect this name
-            batch.forEach((file) => formData.append("invoices_xlsx[]", file));
+        for (let i = 0; i < validFiles.length; i += MAX_BATCH) {
+            const batchFiles = validFiles.slice(i, i + MAX_BATCH);
+            const formData = new FormData();
+            batchFiles.forEach((file) => formData.append("invoices_xlsx[]", file));
 
             try {
-                const response = await fetch("/invoices/upload", {
+                const res = await fetch("/invoices/upload", {
                     method: "POST",
                     body: formData,
                     headers: {
@@ -95,40 +83,92 @@ document.addEventListener("DOMContentLoaded", () => {
                     },
                 });
 
-                if (!response.ok) throw new Error("Batch upload failed");
+                if (!res.ok) throw new Error("Upload failed");
 
-                uploadedCount += batch.length;
-                updateProgress(uploadedCount, validFiles.length);
+                const data = await res.json();
+                lastBatchId = data.batch_id || null;
+
+                uploadedCount += batchFiles.length;
+                updateProgressBar(
+                    uploadedCount,
+                    validFiles.length,
+                    `${uploadedCount} / ${validFiles.length} files uploaded`
+                );
             } catch (err) {
                 console.error(err);
                 failedBatches++;
             }
         }
 
-        setTimeout(() => {
-            progressContainer.classList.add("d-none");
+        if (failedBatches > 0) {
+            showMessage(
+                `Upload finished with errors. Uploaded ${uploadedCount}/${validFiles.length}.`,
+                "warning"
+            );
+        } else {
+            showMessage(`Uploaded ${validFiles.length} file(s). Importing…`, "success");
+        }
 
-            if (failedBatches === 0) {
-                showMessage(
-                    `Successfully uploaded ${validFiles.length} file${validFiles.length > 1 ? "s" : ""}!`,
-                    "success",
-                );
-            } else {
-                showMessage(
-                    `Upload complete with some errors. ${uploadedCount} files uploaded successfully.`,
-                    "warning",
-                );
-            }
+        if (lastBatchId) {
+            startPolling(lastBatchId);
+        } else {
+            showMessage("No batch_id returned from server, can’t track progress.", "warning");
+        }
 
-            fileInput.value = "";
-        }, 500);
+        fileInput.value = "";
     });
 
-    function updateProgress(current, total) {
-        const percentage = Math.round((current / total) * 100);
+    function startPolling(batchId) {
+        stopPolling();
+
+        pollTimer = setInterval(async () => {
+            try {
+                const res = await fetch(`/import-batches/${batchId}/progress`, {
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                });
+
+                if (!res.ok) throw new Error("Progress fetch failed");
+
+                const p = await res.json();
+                const total = Math.max(1, p.files_total || 1);
+                const done = Math.min(p.files_done || 0, total);
+                const percent = Math.round((done / total) * 100);
+
+                progressBar.style.width = percent + "%";
+                progressBar.setAttribute("aria-valuenow", percent);
+
+                progressText.textContent =
+                    `Import: files ${done}/${total} | rows inserted: ${p.rows_inserted || 0} | status: ${p.status}`;
+
+                if (p.status === "done") {
+                    stopPolling();
+                    showMessage(
+                        `Import done ✅ files ${done}/${total}, rows inserted ${p.rows_inserted || 0}`,
+                        "success"
+                    );
+                    setTimeout(() => progressContainer.classList.add("d-none"), 800);
+                }
+
+                if (p.status === "failed") {
+                    stopPolling();
+                    showMessage(`Import failed ❌ ${p.error || ""}`, "error");
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }, 1000);
+    }
+
+    function stopPolling() {
+        if (pollTimer) clearInterval(pollTimer);
+        pollTimer = null;
+    }
+
+    function updateProgressBar(current, total, text) {
+        const percentage = Math.round((current / Math.max(1, total)) * 100);
         progressBar.style.width = percentage + "%";
         progressBar.setAttribute("aria-valuenow", percentage);
-        progressText.textContent = `${current} / ${total} files uploaded`;
+        progressText.textContent = text;
     }
 
     function showMessage(text, type) {
@@ -137,12 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
             error: "alert-danger",
             warning: "alert-warning",
         };
-        const icon =
-            type === "success"
-                ? "check_circle"
-                : type === "error"
-                  ? "error"
-                  : "warning";
+        const icon = type === "success" ? "check_circle" : type === "error" ? "error" : "warning";
 
         messageDiv.innerHTML = `
             <div class="alert ${alertClass[type] || alertClass.warning} alert-dismissible fade show text-white" role="alert">
