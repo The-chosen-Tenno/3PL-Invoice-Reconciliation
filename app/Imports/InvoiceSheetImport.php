@@ -25,6 +25,11 @@ class InvoiceSheetImport implements ToCollection, WithHeadingRow, WithChunkReadi
 
     public function collection(Collection $rows)
     {
+
+        if (!$rows->first() || !isset($rows->first()['warehouse'])) {
+            return;
+        }
+        
         $insert = [];
 
         foreach ($rows as $row) {
