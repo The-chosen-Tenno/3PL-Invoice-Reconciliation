@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InvoiceShipmentController;
 use App\Http\Controllers\ImportBatchController;
+use App\Http\Controllers\RateCardController;
 
 Route::middleware('guest')->group(function () {
     Route::view('/', 'auth.login')->name('login');
@@ -29,6 +30,7 @@ Route::middleware('auth')->prefix('pages')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/invoices/upload', [InvoiceShipmentController::class, 'upload'])->name('invoices.upload');
+    Route::post('/rate-cards/upload', [RateCardController::class, 'upload'])->name('rate.upload');
     Route::get('/import-batches/{batch}/progress', [ImportBatchController::class, 'progress'])
         ->name('import-batches.progress');
 });

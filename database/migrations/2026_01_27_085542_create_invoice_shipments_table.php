@@ -46,7 +46,7 @@ return new class extends Migration
                 ->default('unchecked');
 
             // Everything not needed for validation goes here
-            $table->json('raw_data')->nullable();
+            $table->text('raw_data')->nullable();
 
             $table->timestamps();
 

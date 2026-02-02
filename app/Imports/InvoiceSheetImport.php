@@ -29,7 +29,7 @@ class InvoiceSheetImport implements ToCollection, WithHeadingRow, WithChunkReadi
         if (!$rows->first() || !isset($rows->first()['warehouse'])) {
             return;
         }
-        
+
         $insert = [];
 
         foreach ($rows as $row) {
@@ -50,6 +50,8 @@ class InvoiceSheetImport implements ToCollection, WithHeadingRow, WithChunkReadi
                 'expected_fee'        => null,
                 'fee_diff'            => null,
                 'carrier_fee_status'  => 'unchecked',
+
+                // 'raw_data' => json_encode($row, JSON_UNESCAPED_UNICODE),
 
                 'created_at'          => now(),
                 'updated_at'          => now(),

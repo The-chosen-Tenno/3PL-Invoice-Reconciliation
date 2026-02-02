@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rate_card_sheets', function (Blueprint $table) {
-            $table->id();
+        Schema::table('invoice_shipments', function (Blueprint $table) {
             $table->foreignId('rate_card_version')->nullable()
                 ->constrained('rate_card_versions')
-                ->cascadeOnDelete(); //nullable for now 
-            $table->string('sheet_name');
-            $table->json('data_json');
-            $table->json('column_map_json')->nullable();
-            $table->timestamps();
-            $table->unique(['rate_card_version', 'sheet_name']);
+                ->cascadeOnDelete();
         });
     }
 
@@ -29,6 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rate_card_sheets');
+        Schema::table('invoice_shipments', function (Blueprint $table) {
+            $table->dropForeign(['rate_card_version_id']);
+            $table->dropColumn('rate_card_version_id');
+        });
     }
 };

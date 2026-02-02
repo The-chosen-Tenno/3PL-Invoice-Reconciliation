@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     const trigger = document.getElementById("uploadTrigger");
+    const rateTrigger = document.getElementById("uploadRateTrigger");
     const form = document.getElementById("uploadInvoiceForm");
+    const rateForm = document.getElementById("uploadRateForm");
     const fileInput = document.getElementById("invoices_import");
+    const rateFileInput = document.getElementById("rate_import");
     const messageDiv = document.getElementById("messageDiv");
     const progressContainer = document.getElementById("progressContainer");
     const progressBar = document.getElementById("progressBar");
@@ -36,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!ALLOWED_EXT.includes(ext)) return false;
 
             if (file.type && !ALLOWED_MIME.includes(file.type)) {
-                console.warn(`${file.name} suspicious mime "${file.type}" (allowing anyway)`);
+                console.warn(
+                    `${file.name} suspicious mime "${file.type}" (allowing anyway)`,
+                );
             }
 
             if (file.size > MAX_SIZE_MB * 1024 * 1024) return false;
@@ -45,7 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (validFiles.length === 0) {
-            showMessage("No valid Excel files to upload (only .xlsx/.xls, max 10MB).", "error");
+            showMessage(
+                "No valid Excel files to upload (only .xlsx/.xls, max 10MB).",
+                "error",
+            );
             fileInput.value = "";
             return;
         }
@@ -55,11 +63,18 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.innerHTML = "";
         progressContainer.classList.remove("d-none");
 
-        updateProgressBar(0, validFiles.length, `0 / ${validFiles.length} files uploaded`);
+        updateProgressBar(
+            0,
+            validFiles.length,
+            `0 / ${validFiles.length} files uploaded`,
+        );
 
         const tokenElement = form.querySelector('input[name="_token"]');
         if (!tokenElement) {
-            showMessage("Security token missing. Please refresh the page.", "error");
+            showMessage(
+                "Security token missing. Please refresh the page.",
+                "error",
+            );
             return;
         }
         const csrfToken = tokenElement.value;
@@ -71,7 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let i = 0; i < validFiles.length; i += MAX_BATCH) {
             const batchFiles = validFiles.slice(i, i + MAX_BATCH);
             const formData = new FormData();
-            batchFiles.forEach((file) => formData.append("invoices_xlsx[]", file));
+            batchFiles.forEach((file) =>
+                formData.append("invoices_xlsx[]", file),
+            );
 
             try {
                 const res = await fetch("/invoices/upload", {
@@ -92,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateProgressBar(
                     uploadedCount,
                     validFiles.length,
-                    `${uploadedCount} / ${validFiles.length} files uploaded`
+                    `${uploadedCount} / ${validFiles.length} files uploaded`,
                 );
             } catch (err) {
                 console.error(err);
@@ -103,16 +120,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if (failedBatches > 0) {
             showMessage(
                 `Upload finished with errors. Uploaded ${uploadedCount}/${validFiles.length}.`,
-                "warning"
+                "warning",
             );
         } else {
-            showMessage(`Uploaded ${validFiles.length} file(s). Importing…`, "success");
+            showMessage(
+                `Uploaded ${validFiles.length} file(s). Importing…`,
+                "success",
+            );
         }
 
         if (lastBatchId) {
             startPolling(lastBatchId);
         } else {
-            showMessage("No batch_id returned from server, can’t track progress.", "warning");
+            showMessage(
+                "No batch_id returned from server, can’t track progress.",
+                "warning",
+            );
         }
 
         fileInput.value = "";
@@ -137,16 +160,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 progressBar.style.width = percent + "%";
                 progressBar.setAttribute("aria-valuenow", percent);
 
-                progressText.textContent =
-                    `Import: files ${done}/${total} | rows inserted: ${p.rows_inserted || 0} | status: ${p.status}`;
+                progressText.textContent = `Import: files ${done}/${total} | rows inserted: ${p.rows_inserted || 0} | status: ${p.status}`;
 
                 if (p.status === "done") {
                     stopPolling();
                     showMessage(
                         `Import done ✅ files ${done}/${total}, rows inserted ${p.rows_inserted || 0}`,
-                        "success"
+                        "success",
                     );
-                    setTimeout(() => progressContainer.classList.add("d-none"), 800);
+                    setTimeout(
+                        () => progressContainer.classList.add("d-none"),
+                        800,
+                    );
                 }
 
                 if (p.status === "failed") {
@@ -177,7 +202,12 @@ document.addEventListener("DOMContentLoaded", () => {
             error: "alert-danger",
             warning: "alert-warning",
         };
-        const icon = type === "success" ? "check_circle" : type === "error" ? "error" : "warning";
+        const icon =
+            type === "success"
+                ? "check_circle"
+                : type === "error"
+                  ? "error"
+                  : "warning";
 
         messageDiv.innerHTML = `
             <div class="alert ${alertClass[type] || alertClass.warning} alert-dismissible fade show text-white" role="alert">
@@ -190,5 +220,101 @@ document.addEventListener("DOMContentLoaded", () => {
                 </button>
             </div>
         `;
+    }
+    if (rateTrigger && rateFileInput && rateForm) {
+        rateTrigger.addEventListener("click", () => rateFileInput.click());
+
+        // pick file → upload immediately
+        rateFileInput.addEventListener("change", async () => {
+            if (!rateFileInput.files.length) return;
+
+            const file = rateFileInput.files[0];
+
+            // reset old message
+            messageDiv.innerHTML = "";
+
+            const ext = file.name.split(".").pop().toLowerCase();
+            if (!["xlsx", "xls"].includes(ext)) {
+                showRateMessage(
+                    "Rate card must be an Excel file (.xlsx / .xls).",
+                    "error",
+                );
+                rateFileInput.value = "";
+                return;
+            }
+
+            if (file.size > 15 * 1024 * 1024) {
+                showRateMessage(
+                    "Rate card file too large (max 15MB).",
+                    "error",
+                );
+                rateFileInput.value = "";
+                return;
+            }
+
+            const csrfToken = rateForm.querySelector(
+                'input[name="_token"]',
+            )?.value;
+            if (!csrfToken) {
+                showRateMessage(
+                    "CSRF token missing. Refresh the page.",
+                    "error",
+                );
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("rate_card_xlsx", file);
+
+            try {
+                showRateMessage("Uploading rate card…", "warning");
+
+                const res = await fetch("/rate-cards/upload", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok) {
+                    throw new Error(data.message || "Rate card upload failed");
+                }
+
+                showRateMessage(
+                    "✅ Rate card uploaded successfully",
+                    "success",
+                );
+            } catch (err) {
+                console.error(err);
+                showRateMessage(
+                    err.message || "Rate card upload failed",
+                    "error",
+                );
+            } finally {
+                rateFileInput.value = "";
+            }
+        });
+    }
+
+    /* ===== helper just for rate card messages ===== */
+    function showRateMessage(text, type) {
+        const map = {
+            success: "alert-success",
+            error: "alert-danger",
+            warning: "alert-warning",
+        };
+
+        messageDiv.innerHTML = `
+        <div class="alert ${map[type] || map.warning} alert-dismissible fade show text-white" role="alert">
+            <strong>${text}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+    `;
     }
 });

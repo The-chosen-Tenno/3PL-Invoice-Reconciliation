@@ -22,13 +22,21 @@
                                 <h6 class="text-white text-capitalize m-0">All Invoices</h6>
 
                                 <div class="d-flex align-items-center">
+                                    <button type="button" id="uploadRateTrigger" class="btn bg-gradient-dark mb-0 me-2">
+                                        <i class="material-icons text-sm">upload</i>&nbsp;&nbsp; Upload Rate Cards
+                                    </button>
                                     <button type="button" id="uploadTrigger" class="btn bg-gradient-dark mb-0">
                                         <i class="material-icons text-sm">add</i>&nbsp;&nbsp; Upload Invoices
                                     </button>
                                     <form id="uploadInvoiceForm" enctype="multipart/form-data" class="d-none">
                                         @csrf
-                                        <input type="file" id="invoices_import" name="invoices_xlsx[]" accept=".xlsx,.xls"
-                                            multiple>
+                                        <input type="file" id="invoices_import" name="invoices_xlsx[]"
+                                            accept=".xlsx,.xls" multiple>
+                                    </form>
+                                    <form id="uploadRateForm" enctype="multipart/form-data" class="d-none">
+                                        @csrf
+                                        <input type="file" id="rate_import" name="rate_card_xlsx"
+                                            accept=".xlsx,.xls" >
                                     </form>
                                 </div>
                             </div>

@@ -36,6 +36,5 @@ class InvoiceShipment extends Model
         'carrier_fee' => 'decimal:2',
         'expected_fee' => 'decimal:2',
         'fee_diff' => 'decimal:2',
-        'raw_data' => 'array',
     ];
 }
