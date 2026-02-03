@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const trigger = document.getElementById("uploadTrigger");
-    const rateTrigger = document.getElementById("uploadRateTrigger");
     const form = document.getElementById("uploadInvoiceForm");
-    const rateForm = document.getElementById("uploadRateForm");
     const fileInput = document.getElementById("invoices_import");
-    const rateFileInput = document.getElementById("rate_import");
     const messageDiv = document.getElementById("messageDiv");
     const progressContainer = document.getElementById("progressContainer");
     const progressBar = document.getElementById("progressBar");
@@ -206,8 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
             type === "success"
                 ? "check_circle"
                 : type === "error"
-                  ? "error"
-                  : "warning";
+                ? "error"
+                : "warning";
 
         messageDiv.innerHTML = `
             <div class="alert ${alertClass[type] || alertClass.warning} alert-dismissible fade show text-white" role="alert">
@@ -220,101 +217,5 @@ document.addEventListener("DOMContentLoaded", () => {
                 </button>
             </div>
         `;
-    }
-    if (rateTrigger && rateFileInput && rateForm) {
-        rateTrigger.addEventListener("click", () => rateFileInput.click());
-
-        // pick file → upload immediately
-        rateFileInput.addEventListener("change", async () => {
-            if (!rateFileInput.files.length) return;
-
-            const file = rateFileInput.files[0];
-
-            // reset old message
-            messageDiv.innerHTML = "";
-
-            const ext = file.name.split(".").pop().toLowerCase();
-            if (!["xlsx", "xls"].includes(ext)) {
-                showRateMessage(
-                    "Rate card must be an Excel file (.xlsx / .xls).",
-                    "error",
-                );
-                rateFileInput.value = "";
-                return;
-            }
-
-            if (file.size > 15 * 1024 * 1024) {
-                showRateMessage(
-                    "Rate card file too large (max 15MB).",
-                    "error",
-                );
-                rateFileInput.value = "";
-                return;
-            }
-
-            const csrfToken = rateForm.querySelector(
-                'input[name="_token"]',
-            )?.value;
-            if (!csrfToken) {
-                showRateMessage(
-                    "CSRF token missing. Refresh the page.",
-                    "error",
-                );
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("rate_card_xlsx", file);
-
-            try {
-                showRateMessage("Uploading rate card…", "warning");
-
-                const res = await fetch("/rate-cards/upload", {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken,
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                });
-
-                const data = await res.json().catch(() => ({}));
-
-                if (!res.ok) {
-                    throw new Error(data.message || "Rate card upload failed");
-                }
-
-                showRateMessage(
-                    "✅ Rate card uploaded successfully",
-                    "success",
-                );
-            } catch (err) {
-                console.error(err);
-                showRateMessage(
-                    err.message || "Rate card upload failed",
-                    "error",
-                );
-            } finally {
-                rateFileInput.value = "";
-            }
-        });
-    }
-
-    /* ===== helper just for rate card messages ===== */
-    function showRateMessage(text, type) {
-        const map = {
-            success: "alert-success",
-            error: "alert-danger",
-            warning: "alert-warning",
-        };
-
-        messageDiv.innerHTML = `
-        <div class="alert ${map[type] || map.warning} alert-dismissible fade show text-white" role="alert">
-            <strong>${text}</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-        </div>
-    `;
     }
 });

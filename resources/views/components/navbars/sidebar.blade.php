@@ -31,6 +31,15 @@
                     <span class="nav-link-text ms-1">All Orders</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'rate_logic' ? ' active bg-gradient-primary' : '' }} "
+                    href="/pages/rate_logic">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">superscript</i>
+                    </div>
+                    <span class="nav-link-text ms-1">All Rate Logic</span>
+                </a>
+            </li>
             </li>
             @if (auth()->user()->role === 'admin')
             @endif

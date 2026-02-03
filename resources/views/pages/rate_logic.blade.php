@@ -1,38 +1,25 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
-    <x-navbars.sidebar activePage="dashboard"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="rate_logic"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <x-navbars.navs.auth titlePage="dashboard"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Rate Logic"></x-navbars.navs.auth>
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            {{-- <div
-                                class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize m-0">
-                                    All Invoices
-                                </h6>
-                                <button type="button" id="addProject" class="btn bg-gradient-dark mb-0"
-                                    data-bs-toggle="modal" data-bs-target="#uploadInvoiceModal">
-                                    <i class="material-icons text-sm">add</i>&nbsp;&nbsp; Invoices
-                                </button>
-                            </div> --}}
                             <div
                                 class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize m-0">All Invoices</h6>
-
+                                <h6 class="text-white text-capitalize m-0">All Rate Logics</h6>
                                 <div class="d-flex align-items-center">
-                                    <button type="button" id="uploadTrigger" class="btn bg-gradient-dark mb-0">
-                                        <i class="material-icons text-sm">add</i>&nbsp;&nbsp; Upload Invoices
+                                    <button type="button" id="uploadRateTrigger" class="btn bg-gradient-dark mb-0">
+                                        <i class="material-icons text-sm">upload</i>&nbsp;&nbsp; Upload Rate Cards
                                     </button>
-                                    <form id="uploadInvoiceForm" enctype="multipart/form-data" class="d-none">
+                                    <form id="uploadRateForm" enctype="multipart/form-data" class="d-none">
                                         @csrf
-                                        <input type="file" id="invoices_import" name="invoices_xlsx[]"
-                                            accept=".xlsx,.xls" multiple>
+                                        <input type="file" id="rate_import" name="rate_card_xlsx" accept=".xlsx,.xls">
                                     </form>
                                 </div>
                             </div>
-
                             <div class="px-3 mt-3">
                                 <div id="messageDiv"></div>
                                 <div id="progressContainer" class="d-none mb-3">
@@ -184,6 +171,5 @@
             </div>
         </div>
     </main>
-    {{-- @include('pages.modals.add-invoices-modal') --}}
-    <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/js/rate_logic.js') }}"></script>
 </x-layout>

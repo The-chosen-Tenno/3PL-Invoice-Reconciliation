@@ -21,6 +21,7 @@ Route::post('/logout', [AuthController::class, 'Logout'])->middleware('auth');
 Route::middleware('auth')->prefix('pages')->group(function () {
     Route::view('/dashboard', 'pages.dashboard')->name('dashboard');
     Route::view('/orders', 'pages.orders')->name('orders');
+    Route::view('/rate_logic', 'pages.rate_logic')->name('rate_logic');
 });
 
 // // Invoices
